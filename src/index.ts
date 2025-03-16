@@ -5,6 +5,7 @@ import { initPrompt } from "./utils/initPrompt"
 import server from "./adm/server"
 import { getPromptFromFirestore } from "./adm/getPromptFromFirestore"
 import { initializeDb } from "./adm/dbFirestore"
+import { defaultOptions } from "venom-bot/dist/config/create-config"
 
 
 server
@@ -46,6 +47,7 @@ export let aiResponse:string[] = []
 create({
   session: "bot-gpt",
   disableWelcome: true,
+  browserArgs: ['--headless=new']
 })
   .then(async (client: Whatsapp) => await start(client)
   
@@ -56,6 +58,7 @@ create({
   })
 
 async function start(client: Whatsapp) {
+  
   const customerChat: OpenAI.Chat.ChatCompletionMessageParam[] = [{
     role: "system",
     content: await initPrompt(),
