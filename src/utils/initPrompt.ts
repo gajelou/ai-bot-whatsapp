@@ -1,4 +1,3 @@
-import { eventName } from "..";
 import { getPromptFromFirestore } from "../adm/getPromptFromFirestore";
 
 
@@ -13,5 +12,3 @@ export function initPrompt() {
     return value;
   });
 }
-
-  //.replace(/{{[\s]?eventName[\s]?}}/g, eventName)  //aqui é onde substituímos o nome do evento- {{ storeName }}

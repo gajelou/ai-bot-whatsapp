@@ -32,17 +32,8 @@ async function completion(
 
 
 
-export const eventName = "Digital conference";
-
 export var userMessage:string[] = []
 export let aiResponse:string[] = []
-
-
-
-
-
-
-
 
 create({
   session: "bot-gpt",
@@ -96,8 +87,7 @@ async function start(client: Whatsapp) {
       await client.sendText(message.from, response)
       
   }
-  
- 
+
   )
  
 }
