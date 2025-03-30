@@ -3,9 +3,7 @@ import  OpenAI from "openai"
 import {openai} from './lib/openai'
 import { initPrompt } from "./utils/initPrompt"
 import server from "./adm/server"
-import { getPromptFromFirestore } from "./adm/getPromptFromFirestore"
 import { initializeDb } from "./adm/dbFirestore"
-import { defaultOptions } from "venom-bot/dist/config/create-config"
 
 
 server
