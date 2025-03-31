@@ -8,7 +8,7 @@ const SECRET = process.env.JWT_SECRET || 'segredo-padrão';
 
 const auth = {
   generateToken: (userId: string): string => {
-    return jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
+    return jwt.sign({ userId }, SECRET, { expiresIn: '30d' });
   },
 
   verifyToken: (req: Request, res: Response, next: NextFunction): Response | void => {

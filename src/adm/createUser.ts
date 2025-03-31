@@ -3,7 +3,7 @@ import admin from "firebase-admin";
 
 const createUser = express.Router();
 
-// 🔹 Criar um novo usuário
+
 createUser.post('/register', async (req, res) => {
   try {
     const { nome, phone, senha } = req.body;
@@ -12,12 +12,11 @@ createUser.post('/register', async (req, res) => {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
     }
 
-    // 🔥 Criando usuário no Firestore
     const newUserRef = await admin.firestore().collection('configuration').add({
       nome,
       phone,
       senha,
-      createdAt: new Date()
+      createdAt: new Date(),
     });
 
     res.status(201).json({ id: newUserRef.id, message: 'Usuário criado com sucesso!' });
