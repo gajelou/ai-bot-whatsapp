@@ -19,7 +19,7 @@ async function completion(
   messages: OpenAI.Chat.ChatCompletionMessageParam[]
 ): Promise<string | null> {
   const completion = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo-0613",
+    model: "gpt-4o",
     temperature: 0,
     max_tokens: 256,
     messages,

@@ -8,6 +8,8 @@ import login from "./login";
 
 const server = express()
 server.use(express.json());
+server.use(createUser);  
+server.use(login);  
 const { verifyToken } = auth; 
 
 
@@ -20,8 +22,7 @@ server.get("/response",verifyToken, (req,res)=>{
   res.status(200).send(aiResponse);
 });
 
-server.use(createUser);  
-server.use(login);  
+
 
 
 server.listen(3000, ()=>{

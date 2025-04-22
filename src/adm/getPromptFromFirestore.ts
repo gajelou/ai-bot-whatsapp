@@ -12,8 +12,8 @@ export async function getPromptFromFirestore(){
     const configuration = snapshot.data();
 
     if (configuration !== undefined) {
-      var promptString = configuration.prompt; // Se prompt já for uma string, isso é suficiente
-      console.log("Prompt loaded!/n");
+      var promptString = configuration.prompt; 
+      console.log("Prompt loaded!");
       return promptString;
     } else {
       throw new Error('Configuration is undefined.');
