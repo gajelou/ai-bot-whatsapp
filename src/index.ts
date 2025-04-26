@@ -6,6 +6,7 @@ import server from "./adm/server"
 import { initializeDb } from "./adm/dbFirestore"
 
 
+
 server
 initializeDb
 
@@ -21,7 +22,7 @@ async function completion(
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
     temperature: 0,
-    max_tokens: 256,
+    max_tokens: 1024,
     messages,
   })
 
