@@ -1,14 +1,23 @@
-import dotenv from "dotenv"
-
-dotenv.config()
+import 'dotenv/config';
 
 export const config = {
-  openAI: {
-    apiToken: process.env.OPENAI_API_KEY,
-  },
-  redis: {
-    host: process.env.REDIS_HOST || "localhost",
-    port: (process.env.REDIS_PORT as unknown as number) || 6379,
-    db: (process.env.REDIS_DB as unknown as number) || 0,
-  },
-}
+  PORT: Number(process.env.PORT || 3000),
+
+  ADMIN_TOKEN: process.env.ADMIN_TOKEN || '',
+
+  VENOM_SESSION:
+    process.env.VENOM_SESSION || 'whatsapp-openai-session',
+
+  IGNORE_GROUPS:
+    String(process.env.IGNORE_GROUPS || 'true').toLowerCase() === 'true',
+
+  MAX_HISTORY_MESSAGES: Number(process.env.MAX_HISTORY_MESSAGES || 50),
+
+  AI_PROVIDER: process.env.AI_PROVIDER || 'auto',
+
+  GROQ_API_KEY: process.env.GROQ_API_KEY || '',
+  GROQ_MODEL: process.env.GROQ_MODEL || 'llama-3.1-8b-instant',
+
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
+  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+};
