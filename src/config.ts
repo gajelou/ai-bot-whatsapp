@@ -20,4 +20,6 @@ export const config = {
 
   GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+  ENABLE_AUDIO:
+  String(process.env.ENABLE_AUDIO || 'true').toLowerCase() === 'true',
 };

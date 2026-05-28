@@ -4,6 +4,9 @@ import { config } from './config.js';
 import { logger } from './logger.js';
 import { addMessage, clearHistory, getHistory } from './memory.js';
 import { generateAnswer } from './openai.js';
+import mime from 'mime-types';
+import { transcribeAudio } from './audio.js';
+import { readOrderImage } from './image.js';
 
 let client: Whatsapp | null = null;
 let ready = false;
@@ -136,6 +139,99 @@ async function handleIncomingMessage(message: any) {
 
   try {
     if (!client) return;
+
+      if (
+        config.ENABLE_AUDIO &&
+        (message.type === 'ptt' || message.type === 'audio')
+      ) {
+      console.log('🎤 Áudio recebido.');
+
+    try {
+      const mediaData = await client.decryptFile(message);
+
+      const base64Audio = mediaData.toString('base64');
+
+      const mimeType =
+        mime.lookup(message.mimetype || '') ||
+        'audio/ogg';
+
+      const transcription = await transcribeAudio(
+        base64Audio,
+        String(mimeType)
+      );
+
+      if (!transcription) {
+        await client.sendText(
+          message.from,
+          'Não consegui entender o áudio 😕'
+        );
+
+        return;
+      }
+
+      console.log('📝 TRANSCRIÇÃO:', transcription);
+
+      message.body = transcription;
+    } catch (error) {
+      console.error('ERRO ÁUDIO:', error);
+
+      await client.sendText(
+        message.from,
+        'Tive um erro ao processar o áudio.'
+      );
+
+      return;
+    }
+    }
+
+    if (
+      message.type === 'image' ||
+      message.type === 'document'
+    ) {
+      console.log('🖼️ Imagem recebida.');
+
+      try {
+        const mediaData = await client.decryptFile(message);
+
+        const base64Image = mediaData.toString('base64');
+
+        const mimeType =
+          mime.lookup(message.mimetype || '') ||
+          'image/jpeg';
+
+        const extractedText = await readOrderImage(
+          base64Image,
+          String(mimeType)
+        );
+
+        if (!extractedText) {
+          await client.sendText(
+            message.from,
+            'Não consegui ler o pedido da imagem 😕'
+          );
+
+          return;
+        }
+
+        console.log('📋 PEDIDO EXTRAÍDO:', extractedText);
+
+        await client.sendText(
+          message.from,
+          extractedText
+        );
+
+        return;
+      } catch (error) {
+        console.error('ERRO IMAGEM:', error);
+
+        await client.sendText(
+          message.from,
+          'Tive um erro ao processar a imagem.'
+        );
+
+        return;
+      }
+    }
 
     if (!message.body) return;
     if (message.fromMe) return;
