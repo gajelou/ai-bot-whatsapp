@@ -233,6 +233,36 @@
       "role": "assistant",
       "content": "Tatu!",
       "at": "2026-05-29T10:36:30.674Z"
+    },
+    {
+      "role": "user",
+      "content": "Mas devia",
+      "at": "2026-05-29T10:52:59.592Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Vou confirmar essa informação certinha para você. Posso pedir para um atendente confirmar certinho para você. Você pode ligar para nós nos números (11)94013-2970 ou (11)99929-4923 e um de nossos atendentes estará feliz em ajudá-lo!",
+      "at": "2026-05-29T10:53:00.164Z"
+    },
+    {
+      "role": "user",
+      "content": "Bom dia!",
+      "at": "2026-05-29T10:56:47.225Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Bom dia! Como posso ajudá-lo hoje? Você precisa de algo ou quer saber mais sobre a loja Camargo & Barros Variedades? Estamos localizados na Rua Valtier 363A, Brás, São Paulo, e enviamos para todo o Brasil!",
+      "at": "2026-05-29T10:56:47.772Z"
+    },
+    {
+      "role": "user",
+      "content": "Ola",
+      "at": "2026-05-29T11:13:02.330Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Olá! Como posso ajudá-lo hoje? Você precisa de algo ou quer saber mais sobre a loja Camargo & Barros Variedades? Estamos localizados na Rua Valtier 363A, Brás, São Paulo, e enviamos para todo o Brasil!",
+      "at": "2026-05-29T11:13:03.030Z"
     }
   ],
   "155692749041894@lid": [

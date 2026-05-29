@@ -282,78 +282,78 @@ async function handleIncomingMessage(message: any) {
     // =========================
 
     if (message.type === 'image') {
-      console.log('🖼️ Imagem recebida.');
+  console.log('🖼️ Imagem recebida.');
 
-      try {
-        const mediaData =
-          await (client as any).decryptFile(
-            message
-          );
+  try {
+    let imageBuffer: Buffer | null = null;
 
-        let imageBuffer: Buffer;
+    const mediaData = await (client as any).decryptFile(message);
 
-        if (Buffer.isBuffer(mediaData)) {
-          imageBuffer = mediaData;
-        } else if (
-          typeof mediaData === 'string'
-        ) {
-          const base64 = mediaData.includes(',')
-            ? mediaData.split(',')[1]
-            : mediaData;
+    if (Buffer.isBuffer(mediaData)) {
+      imageBuffer = mediaData;
+    } else if (typeof mediaData === 'string') {
+      const base64 = mediaData.includes(',')
+        ? mediaData.split(',')[1]
+        : mediaData;
 
-          imageBuffer = Buffer.from(
-            base64,
-            'base64'
-          );
-        } else {
-          throw new Error(
-            'Formato de imagem inválido.'
-          );
-        }
+      imageBuffer = Buffer.from(base64, 'base64');
+    }
 
-        const base64Image =
-          imageBuffer.toString('base64');
+    if (!imageBuffer || imageBuffer.length < 2000) {
+      console.log(
+        '⚠️ decryptFile não trouxe imagem completa. Tentando body...'
+      );
 
-        const extractedText =
-          await readOrderImage(
-            base64Image,
-            'image/jpeg'
-          );
+      if (typeof message.body === 'string' && message.body.length > 2000) {
+        const base64 = message.body.includes(',')
+          ? message.body.split(',')[1]
+          : message.body;
 
-        if (!extractedText) {
-          await client.sendText(
-            message.from,
-            'Não consegui ler a imagem 😕'
-          );
-
-          return;
-        }
-
-        console.log(
-          '📋 TEXTO EXTRAÍDO:',
-          extractedText
-        );
-
-        await client.sendText(
-          message.from,
-          extractedText
-        );
-
-        return;
-      } catch (error) {
-        console.error(
-          '❌ ERRO IMAGEM:',
-          error
-        );
-
-        await client.sendText(
-          message.from,
-          'Tive um erro ao processar a imagem.'
-        );
-
-        return;
+        imageBuffer = Buffer.from(base64, 'base64');
       }
     }
+
+    if (!imageBuffer || imageBuffer.length < 2000) {
+      throw new Error(
+        `Imagem muito pequena ou inválida. Tamanho: ${imageBuffer?.length || 0}`
+      );
+    }
+
+    const base64Image = imageBuffer.toString('base64');
+
+    console.log('📦 Tamanho buffer imagem:', imageBuffer.length);
+    console.log('📦 Tamanho base64 imagem:', base64Image.length);
+
+    const extractedText = await readOrderImage(
+      base64Image,
+      'image/jpeg'
+    );
+
+    if (!extractedText) {
+      await client.sendText(
+        message.from,
+        'Não consegui ler a imagem 😕'
+      );
+
+      return;
+    }
+
+    console.log('📋 TEXTO EXTRAÍDO:', extractedText);
+
+    await client.sendText(message.from, extractedText);
+
+    return;
+  } catch (error) {
+    console.error('❌ ERRO IMAGEM:', error);
+
+    await client.sendText(
+      message.from,
+      'Tive um erro ao processar a imagem. Pode tentar enviar a foto novamente em melhor qualidade?'
+    );
+
+    return;
+  }
+}
 
     const text = String(
       message.body || ''

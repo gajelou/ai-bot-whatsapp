@@ -11,17 +11,31 @@ export async function readOrderImage(
   mimeType = 'image/jpeg'
 ): Promise<string | null> {
   try {
+    if (!config.GEMINI_API_KEY) {
+      logger.error('GEMINI_API_KEY não configurada.');
+      return null;
+    }
+
+    const cleanBase64 = base64Image.includes(',')
+      ? base64Image.split(',')[1]
+      : base64Image;
+
+    console.log('📦 Enviando imagem para Gemini:', {
+      mimeType,
+      base64Length: cleanBase64.length,
+      model: config.GEMINI_MODEL,
+    });
+
     const response = await gemini.models.generateContent({
-      model: config.GEMINI_MODEL || 'gemini-2.5-flash',
+      model: config.GEMINI_MODEL || 'gemini-2.0-flash',
 
       contents: [
         {
           inlineData: {
             mimeType,
-            data: base64Image,
+            data: cleanBase64,
           },
         },
-
         {
           text: `
 Leia esta imagem de um pedido escrito à mão.
@@ -36,30 +50,30 @@ Regras:
 - responda apenas com o pedido organizado
 - não invente produtos
 - português do Brasil
-
-Exemplo de resposta:
-
-📋 Pedido:
-
-- 2x Mini motosserra 6"
-- 5x Alicate universal
-- 3x Máquina de solda 220v
-- 1x Trena 5m
 `,
         },
       ],
+
+      config: {
+        temperature: 0.1,
+        topP: 0.2,
+        topK: 10,
+      },
     });
 
     const text = response.text?.trim();
 
-    if (!text) {
-      return null;
-    }
+    if (!text) return null;
 
     return text;
-  } catch (error) {
+  } catch (error: any) {
     logger.error(
-      { error },
+      {
+        name: error?.name,
+        status: error?.status,
+        message: error?.message,
+        details: error?.errorDetails || error?.details,
+      },
       'Erro ao ler imagem do pedido'
     );
 
