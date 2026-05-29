@@ -163,6 +163,170 @@
       "role": "assistant",
       "content": "O link para o catálogo da loja Camargo & Barros Variedades é:\nhttps://gajelou.github.io/scraper_ceb_front/\n\nEspero que isso ajude! Se tiver alguma dúvida ou precisar de mais ajuda, estou aqui para ajudar.",
       "at": "2026-05-28T13:39:38.815Z"
+    },
+    {
+      "role": "user",
+      "content": "Ola",
+      "at": "2026-05-28T17:04:58.282Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Olá! Como posso ajudá-lo hoje? Quer saber mais sobre a loja Camargo & Barros Variedades ou precisa de ajuda com algo específico? Estamos localizados na Rua Valtier 363A, Brás, São Paulo, e enviamos para todo o Brasil!",
+      "at": "2026-05-28T17:04:58.936Z"
+    },
+    {
+      "role": "user",
+      "content": "Olá,  boa tarde.",
+      "at": "2026-05-28T17:44:40.664Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Boa tarde! Seja bem-vindo à Camargo & Barros Variedades! Estou aqui para ajudá-lo. O que você precisa hoje? Quer saber mais sobre nossos produtos ou precisa de ajuda com algo específico?",
+      "at": "2026-05-28T17:44:41.270Z"
+    },
+    {
+      "role": "user",
+      "content": "Quero um catálogo",
+      "at": "2026-05-28T17:44:54.089Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Claro! O link para o catálogo da loja Camargo & Barros Variedades é:\nhttps://gajelou.github.io/scraper_ceb_front/\n\nVocê pode acessar o catálogo online e ver todos os produtos que oferecemos. Se tiver alguma dúvida ou precisar de mais ajuda, estou aqui para ajudar!",
+      "at": "2026-05-28T17:44:54.669Z"
+    },
+    {
+      "role": "user",
+      "content": "Quero ajuda de um atendente",
+      "at": "2026-05-28T17:45:36.460Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Posso pedir para um atendente confirmar certinho para você. Você pode ligar para nós nos números (11)94013-2970 ou (11)99929-4923 e um de nossos atendentes estará feliz em ajudá-lo! Estamos localizados na Rua Valtier 363A, Brás, São Paulo.",
+      "at": "2026-05-28T17:45:37.005Z"
+    },
+    {
+      "role": "user",
+      "content": "Ola",
+      "at": "2026-05-29T10:36:00.398Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Olá! Como posso ajudá-lo hoje? Você precisa de ajuda com algo específico ou quer saber mais sobre a loja Camargo & Barros Variedades? Estamos aqui para ajudar!",
+      "at": "2026-05-29T10:36:00.961Z"
+    },
+    {
+      "role": "user",
+      "content": "Alô alô testando o áudio?",
+      "at": "2026-05-29T10:36:13.855Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Recebi sua mensagem! Estou aqui para ajudar. Você precisa de algo ou quer saber mais sobre a loja Camargo & Barros Variedades? Estamos localizados na Rua Valtier 363A, Brás, São Paulo, e enviamos para todo o Brasil!",
+      "at": "2026-05-29T10:36:14.410Z"
+    },
+    {
+      "role": "user",
+      "content": "Você consegue entender o que eu estou falando no áudio? Se sim, responda tatu.",
+      "at": "2026-05-29T10:36:29.967Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Tatu!",
+      "at": "2026-05-29T10:36:30.674Z"
+    }
+  ],
+  "155692749041894@lid": [
+    {
+      "role": "user",
+      "content": "Lixadeira",
+      "at": "2026-05-28T17:04:58.315Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Nós temos lixadeiras na loja! Você está procurando por uma lixadeira específica? Quer que eu verifique o nosso estoque? Posso pedir para um atendente confirmar certinho 😊",
+      "at": "2026-05-28T17:04:58.856Z"
+    },
+    {
+      "role": "user",
+      "content": "Sim,quero!",
+      "at": "2026-05-28T17:05:35.110Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Vou confirmar essa informação certinha para você 😊. Posso verificar o nosso catálogo ou pedir para um atendente verificar o estoque de lixadeiras. Você gostaria de saber mais sobre os modelos que temos disponíveis ou precisa de alguma característica específica na lixadeira?",
+      "at": "2026-05-28T17:05:35.646Z"
+    },
+    {
+      "role": "user",
+      "content": "Quero conhecer os modelos que vocês tem!",
+      "at": "2026-05-28T17:06:39.950Z"
+    },
+    {
+      "role": "assistant",
+      "content": "\nVou confirmar essa informação certinha para você 😊\n",
+      "at": "2026-05-28T17:06:41.219Z"
+    }
+  ],
+  "266666734837818@lid": [
+    {
+      "role": "user",
+      "content": "Oii boa tarde!",
+      "at": "2026-05-28T17:33:43.602Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Boa tarde! Seja bem-vindo à Camargo & Barros Variedades! Eu sou o Camarguinho, atendente virtual. Como posso ajudar você hoje?",
+      "at": "2026-05-28T17:33:44.031Z"
+    },
+    {
+      "role": "user",
+      "content": "Tudo bem?",
+      "at": "2026-05-28T17:33:47.926Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Sim, tudo bem! Estou aqui para ajudar. Você precisa de algo em específico ou quer dar uma olhada no nosso catálogo? Estamos localizados na Rua Valtier 363A, no Brás, em São Paulo, e enviamos para todo o Brasil!",
+      "at": "2026-05-28T17:33:48.328Z"
+    },
+    {
+      "role": "user",
+      "content": "Isso, poderia me mandar mais algumas fotos ou vídeos por gentileza?",
+      "at": "2026-05-28T17:33:59.158Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Claro! Infelizmente, não posso enviar fotos ou vídeos diretamente. Mas posso te oferecer o link do nosso catálogo: https://gajelou.github.io/scraper_ceb_front/. Lá você pode encontrar mais informações e fotos dos nossos produtos. Se precisar de mais ajuda, é só me perguntar!",
+      "at": "2026-05-28T17:33:59.684Z"
+    },
+    {
+      "role": "user",
+      "content": "Prazer Flávia!",
+      "at": "2026-05-28T17:34:02.036Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Peço desculpas, mas eu sou o Camarguinho, não a Flávia! Seja bem-vindo à Camargo & Barros Variedades! Como posso ajudar você hoje?",
+      "at": "2026-05-28T17:34:02.413Z"
+    },
+    {
+      "role": "user",
+      "content": "Assim sem problema",
+      "at": "2026-05-29T10:13:00.977Z"
+    },
+    {
+      "role": "user",
+      "content": "Caso queira me manda as foto que você tem amigo",
+      "at": "2026-05-29T10:13:01.002Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Entendi! Sem problemas mesmo! Se precisar de algo, é só me perguntar. Estou aqui para ajudar. Quer saber mais sobre algum produto específico ou precisa de uma recomendação?",
+      "at": "2026-05-29T10:13:01.666Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Peço desculpas, mas como eu disse anteriormente, não posso enviar fotos diretamente. Mas posso te oferecer o link do nosso catálogo: https://gajelou.github.io/scraper_ceb_front/. Lá você pode encontrar mais informações e fotos dos nossos produtos. Se precisar de mais ajuda, é só me perguntar!",
+      "at": "2026-05-29T10:13:01.693Z"
     }
   ]
 }

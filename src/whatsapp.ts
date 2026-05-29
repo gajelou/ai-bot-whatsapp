@@ -1,10 +1,16 @@
 import { create, Whatsapp } from '@wppconnect-team/wppconnect';
 import qrcode from 'qrcode-terminal';
+
 import { config } from './config.js';
 import { logger } from './logger.js';
-import { addMessage, clearHistory, getHistory } from './memory.js';
+
+import {
+  addMessage,
+  clearHistory,
+  getHistory,
+} from './memory.js';
+
 import { generateAnswer } from './openai.js';
-import mime from 'mime-types';
 import { transcribeAudio } from './audio.js';
 import { readOrderImage } from './image.js';
 
@@ -20,9 +26,14 @@ export function getWhatsAppStatus() {
   };
 }
 
-export async function sendWhatsAppText(to: string, message: string) {
+export async function sendWhatsAppText(
+  to: string,
+  message: string
+) {
   if (!client || !ready) {
-    throw new Error('WhatsApp ainda não está conectado.');
+    throw new Error(
+      'WhatsApp ainda não está conectado.'
+    );
   }
 
   const phone = to.includes('@c.us')
@@ -37,10 +48,15 @@ export async function startWhatsApp() {
     client = await create({
       session: config.VENOM_SESSION,
 
-      catchQR: (base64Qrimg, asciiQR, attempts, urlCode) => {
+      catchQR: (
+        base64Qrimg,
+        asciiQR,
+        attempts,
+        urlCode
+      ) => {
         logger.info(
           { attempts },
-          'QR Code recebido. Escaneie no WhatsApp.'
+          'QR Code recebido.'
         );
 
         console.log('\n========================================');
@@ -52,14 +68,18 @@ export async function startWhatsApp() {
         }
 
         if (urlCode) {
-          qrcode.generate(urlCode, { small: true });
+          qrcode.generate(urlCode, {
+            small: true,
+          });
         } else {
           const qr = base64Qrimg.replace(
             /^data:image\/png;base64,/,
             ''
           );
 
-          qrcode.generate(qr, { small: true });
+          qrcode.generate(qr, {
+            small: true,
+          });
         }
 
         console.log('\n========================================\n');
@@ -67,7 +87,10 @@ export async function startWhatsApp() {
 
       statusFind: (statusSession, session) => {
         logger.info(
-          { statusSession, session },
+          {
+            statusSession,
+            session,
+          },
           'Status da sessão WPPConnect'
         );
 
@@ -95,6 +118,9 @@ export async function startWhatsApp() {
       tokenStore: 'file',
 
       puppeteerOptions: {
+        executablePath:
+          'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -106,8 +132,11 @@ export async function startWhatsApp() {
 
     ready = true;
 
-    logger.info('WhatsApp conectado com sucesso via WPPConnect.');
-    console.log('✅ WPPConnect iniciado e aguardando mensagens.');
+    logger.info(
+      'WhatsApp conectado com sucesso.'
+    );
+
+    console.log('✅ WPPConnect iniciado.');
 
     client.onMessage(async (message) => {
       console.log('🔥 MENSAGEM RECEBIDA:', {
@@ -126,94 +155,184 @@ export async function startWhatsApp() {
 
     logger.error(
       { error },
-      'Falha ao iniciar WPPConnect'
+      'Falha ao iniciar WhatsApp'
     );
   }
 }
 
 async function handleIncomingMessage(message: any) {
+  if (!client) return;
+
   const lockKey = String(
     message.id ||
-    `${message.from}:${message.body}:${Date.now()}`
+      `${message.from}:${message.body}:${Date.now()}`
   );
 
   try {
-    if (!client) return;
-
-      if (
-        config.ENABLE_AUDIO &&
-        (message.type === 'ptt' || message.type === 'audio')
-      ) {
-      console.log('🎤 Áudio recebido.');
-
-    try {
-      const mediaData = await client.decryptFile(message);
-
-      const base64Audio = mediaData.toString('base64');
-
-      const mimeType =
-        mime.lookup(message.mimetype || '') ||
-        'audio/ogg';
-
-      const transcription = await transcribeAudio(
-        base64Audio,
-        String(mimeType)
-      );
-
-      if (!transcription) {
-        await client.sendText(
-          message.from,
-          'Não consegui entender o áudio 😕'
-        );
-
-        return;
-      }
-
-      console.log('📝 TRANSCRIÇÃO:', transcription);
-
-      message.body = transcription;
-    } catch (error) {
-      console.error('ERRO ÁUDIO:', error);
-
-      await client.sendText(
-        message.from,
-        'Tive um erro ao processar o áudio.'
-      );
-
-      return;
-    }
-    }
+    if (!message) return;
+    if (message.fromMe) return;
 
     if (
-      message.type === 'image' ||
-      message.type === 'document'
+      config.IGNORE_GROUPS &&
+      message.isGroupMsg
     ) {
-      console.log('🖼️ Imagem recebida.');
+      return;
+    }
+
+    console.log('➡️ Processando mensagem:', {
+      id: message.id,
+      from: message.from,
+      body: message.body,
+      type: message.type,
+    });
+
+    if (processing.has(lockKey)) {
+      return;
+    }
+
+    processing.add(lockKey);
+
+    // =========================
+    // ÁUDIO
+    // =========================
+
+    if (
+      config.ENABLE_AUDIO &&
+      (message.type === 'ptt' ||
+        message.type === 'audio')
+    ) {
+      console.log('🎤 Áudio recebido.');
 
       try {
-        const mediaData = await client.decryptFile(message);
+        const mediaData =
+          await (client as any).decryptFile(
+            message
+          );
 
-        const base64Image = mediaData.toString('base64');
+        let audioBuffer: Buffer;
 
-        const mimeType =
-          mime.lookup(message.mimetype || '') ||
-          'image/jpeg';
+        if (Buffer.isBuffer(mediaData)) {
+          audioBuffer = mediaData;
+        } else if (
+          typeof mediaData === 'string'
+        ) {
+          const base64 = mediaData.includes(',')
+            ? mediaData.split(',')[1]
+            : mediaData;
 
-        const extractedText = await readOrderImage(
-          base64Image,
-          String(mimeType)
+          audioBuffer = Buffer.from(
+            base64,
+            'base64'
+          );
+        } else {
+          throw new Error(
+            'Formato de áudio inválido retornado pelo WPPConnect.'
+          );
+        }
+
+        console.log(
+          '📦 Tamanho do áudio:',
+          audioBuffer.length
         );
 
-        if (!extractedText) {
+        if (audioBuffer.length < 1000) {
+          throw new Error(
+            'Áudio vazio ou inválido.'
+          );
+        }
+
+        const transcription =
+          await transcribeAudio(
+            audioBuffer,
+            String(message.id)
+          );
+
+        if (!transcription) {
           await client.sendText(
             message.from,
-            'Não consegui ler o pedido da imagem 😕'
+            'Não consegui entender o áudio 😕'
           );
 
           return;
         }
 
-        console.log('📋 PEDIDO EXTRAÍDO:', extractedText);
+        console.log(
+          '📝 TRANSCRIÇÃO:',
+          transcription
+        );
+
+        message.body = transcription;
+      } catch (error) {
+        console.error(
+          '❌ ERRO ÁUDIO:',
+          error
+        );
+
+        await client.sendText(
+          message.from,
+          'Tive um erro ao processar o áudio.'
+        );
+
+        return;
+      }
+    }
+
+    // =========================
+    // IMAGEM
+    // =========================
+
+    if (message.type === 'image') {
+      console.log('🖼️ Imagem recebida.');
+
+      try {
+        const mediaData =
+          await (client as any).decryptFile(
+            message
+          );
+
+        let imageBuffer: Buffer;
+
+        if (Buffer.isBuffer(mediaData)) {
+          imageBuffer = mediaData;
+        } else if (
+          typeof mediaData === 'string'
+        ) {
+          const base64 = mediaData.includes(',')
+            ? mediaData.split(',')[1]
+            : mediaData;
+
+          imageBuffer = Buffer.from(
+            base64,
+            'base64'
+          );
+        } else {
+          throw new Error(
+            'Formato de imagem inválido.'
+          );
+        }
+
+        const base64Image =
+          imageBuffer.toString('base64');
+
+        const extractedText =
+          await readOrderImage(
+            base64Image,
+            'image/jpeg'
+          );
+
+        if (!extractedText) {
+          await client.sendText(
+            message.from,
+            'Não consegui ler a imagem 😕'
+          );
+
+          return;
+        }
+
+        console.log(
+          '📋 TEXTO EXTRAÍDO:',
+          extractedText
+        );
 
         await client.sendText(
           message.from,
@@ -222,7 +341,10 @@ async function handleIncomingMessage(message: any) {
 
         return;
       } catch (error) {
-        console.error('ERRO IMAGEM:', error);
+        console.error(
+          '❌ ERRO IMAGEM:',
+          error
+        );
 
         await client.sendText(
           message.from,
@@ -233,57 +355,86 @@ async function handleIncomingMessage(message: any) {
       }
     }
 
-    if (!message.body) return;
-    if (message.fromMe) return;
-    if (config.IGNORE_GROUPS && message.isGroupMsg) return;
-
-    const chatId = message.from;
-    const text = String(message.body).trim();
+    const text = String(
+      message.body || ''
+    ).trim();
 
     if (!text) return;
 
-    if (processing.has(lockKey)) {
-      logger.info(
-        { lockKey },
-        'Mensagem já está em processamento.'
-      );
-      return;
-    }
-
-    processing.add(lockKey);
+    // =========================
+    // COMANDOS
+    // =========================
 
     if (text.toLowerCase() === '/ping') {
       await client.sendText(
-        chatId,
-        'pong ✅ Bot está recebendo mensagens pelo WPPConnect.'
+        message.from,
+        'pong ✅ Bot funcionando.'
       );
+
       return;
     }
 
     if (text.toLowerCase() === '/limpar') {
-      await clearHistory(chatId);
+      await clearHistory(message.from);
 
       await client.sendText(
-        chatId,
-        'Histórico apagado. Pode me chamar de novo.'
+        message.from,
+        '✅ Histórico apagado.'
       );
 
       return;
     }
 
-    await addMessage(chatId, 'user', text);
+    // =========================
+    // IA
+    // =========================
 
-    const history = await getHistory(chatId);
+    console.log(
+      '💾 Salvando mensagem usuário...'
+    );
 
-    console.log('CHAMANDO GROQ...');
-    const answer = await generateAnswer(text, history);
-    console.log('RESPOSTA GROQ:', answer);
+    await addMessage(
+      message.from,
+      'user',
+      text
+    );
 
-    await addMessage(chatId, 'assistant', answer);
+    const history = await getHistory(
+      message.from
+    );
 
-    console.log('ENVIANDO RESPOSTA...');
-    await client.sendText(chatId, answer);
-    console.log('RESPOSTA ENVIADA.');
+    console.log(
+      '🤖 Gerando resposta IA...'
+    );
+
+    const answer = await generateAnswer(
+      text,
+      history
+    );
+
+    console.log(
+      '📝 RESPOSTA IA:',
+      answer
+    );
+
+    await addMessage(
+      message.from,
+      'assistant',
+      answer
+    );
+
+    console.log(
+      '📤 Enviando resposta...'
+    );
+
+    await client.sendText(
+      message.from,
+      answer
+    );
+
+    console.log(
+      '✅ Resposta enviada.'
+    );
   } catch (error) {
     logger.error(
       { error },
@@ -291,9 +442,9 @@ async function handleIncomingMessage(message: any) {
     );
 
     try {
-      await client?.sendText(
+      await client.sendText(
         message.from,
-        'Tive um erro ao responder agora. Tente novamente em instantes.'
+        'Tive um erro ao responder 😕'
       );
     } catch {}
   } finally {

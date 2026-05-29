@@ -1,52 +1,58 @@
-import { GoogleGenAI } from '@google/genai';
-import { config } from './config.js';
+import { DeepgramClient } from '@deepgram/sdk';
 import { logger } from './logger.js';
 
-const gemini = new GoogleGenAI({
-  apiKey: config.GEMINI_API_KEY,
+const deepgram = new DeepgramClient({
+  apiKey: process.env.DEEPGRAM_API_KEY || '',
 });
 
 export async function transcribeAudio(
-  base64Audio: string,
-  mimeType = 'audio/ogg'
+  audioBuffer: Buffer,
+  messageId: string
 ): Promise<string | null> {
   try {
-    if (!config.GEMINI_API_KEY) {
-      logger.error('GEMINI_API_KEY não configurada.');
+    if (!process.env.DEEPGRAM_API_KEY) {
+      logger.error('DEEPGRAM_API_KEY não configurada.');
       return null;
     }
 
-    const response = await gemini.models.generateContent({
-      model: config.GEMINI_MODEL || 'gemini-2.5-flash',
+    console.log('🤖 Enviando áudio para Deepgram...');
+    console.log('📦 Tamanho do áudio:', audioBuffer.length);
+    console.log('🆔 ID mensagem:', messageId);
 
-      contents: [
+    const response =
+      await deepgram.listen.v1.media.transcribeFile(
+        audioBuffer,
         {
-          inlineData: {
-            mimeType,
-            data: base64Audio,
-          },
-        },
-        {
-          text: `
-Transcreva este áudio do WhatsApp para texto em português do Brasil.
+          model: 'nova-3',
+          language: 'pt-BR',
+          smart_format: true,
+          punctuate: true,
+        }
+      );
 
-Responda APENAS com a transcrição.
-`,
-        },
-      ],
-    });
+    console.log(
+      'DEEPGRAM RESPONSE:',
+      JSON.stringify(response, null, 2)
+    );
 
-    const text = response.text?.trim();
+    const result = response as any;
 
-    if (!text) {
+    const transcript =
+      result?.result?.results?.channels?.[0]?.alternatives?.[0]?.transcript?.trim()
+      ??
+      result?.results?.channels?.[0]?.alternatives?.[0]?.transcript?.trim();
+
+    console.log('📝 TRANSCRIÇÃO DEEPGRAM:', transcript);
+
+    if (!transcript) {
       return null;
     }
 
-    return text;
+    return transcript;
   } catch (error) {
     logger.error(
       { error },
-      'Erro ao transcrever áudio com Gemini'
+      'Erro ao transcrever áudio com Deepgram'
     );
 
     return null;
